@@ -17,10 +17,13 @@
       ></v-text-field>
     </v-form>
     <v-card-actions>
+      <v-btn :disabled="!valid" @click="auth(userInfo, 'signUp')"
+        >Sign Up</v-btn
+      >
       <v-spacer />
-      <v-btn :disabled="!valid" color="amber" @click="submitForm(userInfo)">{{
-        buttonText
-      }}</v-btn>
+      <v-btn :disabled="!valid" @click="auth(userInfo, 'signIn')"
+        >Sign In</v-btn
+      >
     </v-card-actions>
   </v-card-text>
 </template>
@@ -30,8 +33,7 @@ import validations from '@/utils/validations'
 
 export default {
   props: {
-    submitForm: { type: Function, required: true },
-    buttonText: { type: String, required: true }
+    auth: { type: Function, required: true }
   },
   data: () => ({
     valid: false,

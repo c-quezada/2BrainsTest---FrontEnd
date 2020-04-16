@@ -11,9 +11,6 @@
       <div v-if="authUser" class="mx-1">
         <v-btn @click="logoutUser">Logout</v-btn>
       </div>
-      <div v-else class="mx-1">
-        <v-btn to="/" nuxt>Sign Up</v-btn>
-      </div>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
@@ -37,6 +34,21 @@
         <nuxt />
       </v-container>
     </v-content>
+
+    <v-snackbar
+      v-for="(snackbar, index) in snackbars.filter((s) => s.showing)"
+      :key="snackbar.text + Math.random()"
+      v-model="snackbar.showing"
+      :timeout="snackbar.timeout"
+      :color="snackbar.color"
+      :style="`bottom: ${index * 60 + 8}px`"
+    >
+      {{ snackbar.text }}
+
+      <v-btn text @click="snackbar.showing = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -53,20 +65,22 @@ export default {
   }),
   computed: {
     ...mapState({
-      authUser: (state) => state.firebase.authUser
+      authUser: (state) => state.firebase.authUser,
+      snackbars: (state) => state.snackbar.snackbars
     })
   },
-
   methods: {
     async logoutUser() {
       try {
         await this.$fireAuth.signOut()
-        // eslint-disable-next-line no-console
-        console.log('signOut')
+        this.$store.dispatch('snackbar/setSnackbar', {
+          text: 'See You Later!'
+        })
         this.$router.push('/')
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log('signOut Error', error)
+        this.$store.dispatch('snackbar/setSnackbar', {
+          text: error
+        })
       }
     }
   }

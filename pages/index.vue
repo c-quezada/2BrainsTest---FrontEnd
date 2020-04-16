@@ -7,7 +7,7 @@
             >Welcome - 2Brains Vuejs FirebaseAuth Nuxt</v-toolbar-title
           >
         </v-toolbar>
-        <AuthForm :submit-form="loginUser" button-text="Login" />
+        <AuthForm :auth="auth" />
       </v-card>
     </v-col>
   </v-row>
@@ -21,19 +21,33 @@ export default {
     AuthForm
   },
   methods: {
-    async loginUser(loginInfo) {
-      const response = await this.$fireAuth.signInWithEmailAndPassword(
-        loginInfo.email,
-        loginInfo.password
-      )
+    async auth(loginInfo, type) {
+      let response = null
+
+      switch (type) {
+        case 'signIn':
+          response = await this.$fireAuth.signInWithEmailAndPassword(
+            loginInfo.email,
+            loginInfo.password
+          )
+          break
+        case 'signUp':
+          response = await this.$fireAuth.createUserWithEmailAndPassword(
+            loginInfo.email,
+            loginInfo.password
+          )
+          break
+      }
 
       if (response.error) {
-        // eslint-disable-next-line no-console
-        console.log('SignIn Error', response.error)
+        this.$store.dispatch('snackbar/setSnackbar', {
+          text: response.error
+        })
       } else {
-        // eslint-disable-next-line no-console
-        console.log('SignIn Successfully', response)
         this.$router.push('/inspire')
+        this.$store.dispatch('snackbar/setSnackbar', {
+          text: 'Welcome'
+        })
       }
     }
   }
