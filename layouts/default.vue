@@ -1,92 +1,73 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
+  <v-app id="app-template">
+    <v-app-bar app clipped-left color="amber">
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <span class="title ml-3 mr-5"
+        >2Brains&nbsp;<span class="font-weight-light">Test | Welcome </span>
+        <span v-if="authUser">{{ authUser.email }}</span></span
+      >
+      <v-spacer />
+
+      <div v-if="authUser" class="mx-1">
+        <v-btn @click="logoutUser">Logout</v-btn>
+      </div>
+      <div v-else class="mx-1">
+        <v-btn to="/" nuxt>Sign Up</v-btn>
+      </div>
+    </v-app-bar>
+
+    <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
+      <v-list dense class="grey lighten-4">
+        <template v-for="(item, index) in items">
+          <v-list-item :key="index" link>
+            <v-list-item-content>
+              <v-list-item-title class="grey--text">
+                <v-btn text small block :href="item.link">{{
+                  item.text
+                }}</v-btn>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-    </v-app-bar>
+
     <v-content>
-      <v-container>
+      <v-container fluid class="fill-height">
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
   </v-app>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-  data() {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+  data: () => ({
+    drawer: false,
+    items: [
+      { text: 'LinkedIn', link: 'https://www.linkedin.com/in/cpqm07/' },
+      { text: 'GitHub', link: 'http://github.com/cpqm07' }
+    ]
+  }),
+  computed: {
+    ...mapState({
+      authUser: (state) => state.firebase.authUser
+    })
+  },
+
+  methods: {
+    async logoutUser() {
+      try {
+        await this.$fireAuth.signOut()
+        // eslint-disable-next-line no-console
+        console.log('signOut')
+        this.$router.push('/')
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log('signOut Error', error)
+      }
     }
   }
 }

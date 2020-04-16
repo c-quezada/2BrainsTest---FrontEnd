@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+require('dotenv').config()
 
 export default {
   mode: 'spa',
@@ -39,6 +40,7 @@ export default {
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify'
   ],
+
   /*
    ** Nuxt.js modules
    */
@@ -46,8 +48,32 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
+    // Doc: https://firebase.nuxtjs.org/guide/getting-started/
+    '@nuxtjs/firebase'
   ],
+
+  // Nuxt-Firebase Module Options
+  firebase: {
+    config: {
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      databaseURL: process.env.FIREBASE_DATABASE_URL,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID,
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID
+    },
+    onFirebaseHosting: false,
+    services: {
+      auth: {
+        initialize: {
+          onAuthStateChangedAction: 'firebase/onAuthStateChanged'
+        }
+      }
+    }
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
@@ -58,21 +84,7 @@ export default {
    ** https://github.com/nuxt-community/vuetify-module
    */
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      dark: true,
-      themes: {
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
+    customVariables: ['~/assets/variables.scss']
   },
   /*
    ** Build configuration
