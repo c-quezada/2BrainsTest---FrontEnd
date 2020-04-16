@@ -21,33 +21,31 @@ export default {
     AuthForm
   },
   methods: {
+    printMessage(message) {
+      this.$store.dispatch('snackbar/setSnackbar', {
+        text: message,
+        color: 'error'
+      })
+    },
     async auth(loginInfo, type) {
-      let response = null
+      // eslint-disable-next-line no-console
+      console.log('loginInfo', loginInfo)
+      // eslint-disable-next-line no-console
+      console.log('type', type)
 
       switch (type) {
         case 'signIn':
-          response = await this.$fireAuth.signInWithEmailAndPassword(
-            loginInfo.email,
-            loginInfo.password
-          )
+          await this.$fireAuth
+            .signInWithEmailAndPassword(loginInfo.email, loginInfo.password)
+            .then((response) => this.$router.push('/inspire'))
+            .catch((error) => this.printMessage(error))
           break
         case 'signUp':
-          response = await this.$fireAuth.createUserWithEmailAndPassword(
-            loginInfo.email,
-            loginInfo.password
-          )
+          await this.$fireAuth
+            .createUserWithEmailAndPassword(loginInfo.email, loginInfo.password)
+            .then((response) => this.$router.push('/inspire'))
+            .catch((error) => this.printMessage(error))
           break
-      }
-
-      if (response.error) {
-        this.$store.dispatch('snackbar/setSnackbar', {
-          text: response.error
-        })
-      } else {
-        this.$router.push('/inspire')
-        this.$store.dispatch('snackbar/setSnackbar', {
-          text: 'Welcome'
-        })
       }
     }
   }

@@ -1,21 +1,46 @@
 <template>
-  <v-layout>
-    <v-flex class="text-center">
-      <img src="/v.png" alt="Vuetify.js" class="mb-5" />
-      <blockquote class="blockquote">
-        &#8220;First, solve the problem. Then, write the code.&#8221;
-        <footer>
-          <small>
-            <em>&mdash;John Johnson</em>
-          </small>
-        </footer>
-      </blockquote>
-    </v-flex>
-  </v-layout>
+  <div>
+    <v-row>
+      <v-col v-for="(user, index) in randomUsers" :key="index" cols="12" sm="3">
+        <random-card :user="user" />
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import RandomCard from '@/components/user/RandomCard'
+
 export default {
-  middleware: 'auth'
+  middleware: 'auth',
+  components: {
+    RandomCard
+  },
+
+  computed: {
+    ...mapState({
+      randomUsers: (state) => state.randomUsers.randomUsers
+    })
+  },
+  created() {
+    this.fetchRandomUsers()
+  },
+  methods: {
+    async fetchRandomUsers() {
+      const response = await this.$store.dispatch('randomUsers/getRandomUsers')
+
+      if (response.error) {
+        this.$store.dispatch('snackbar/setSnackbar', {
+          color: 'error',
+          text: response.error
+        })
+      } else {
+        this.$store.dispatch('snackbar/setSnackbar', {
+          text: 'Fetch RandomUsers Succesfully'
+        })
+      }
+    }
+  }
 }
 </script>
