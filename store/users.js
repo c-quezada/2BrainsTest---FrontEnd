@@ -20,6 +20,5 @@ export default {
         return error
       }
     }
-  },
-  getters: {}
+  }
 }

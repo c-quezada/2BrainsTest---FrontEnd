@@ -28,22 +28,17 @@ export default {
       })
     },
     async auth(loginInfo, type) {
-      // eslint-disable-next-line no-console
-      console.log('loginInfo', loginInfo)
-      // eslint-disable-next-line no-console
-      console.log('type', type)
-
       switch (type) {
         case 'signIn':
           await this.$fireAuth
             .signInWithEmailAndPassword(loginInfo.email, loginInfo.password)
-            .then((response) => this.$router.push('/inspire'))
+            .then((response) => this.$router.push('/users'))
             .catch((error) => this.printMessage(error))
           break
         case 'signUp':
           await this.$fireAuth
             .createUserWithEmailAndPassword(loginInfo.email, loginInfo.password)
-            .then((response) => this.$router.push('/inspire'))
+            .then((response) => this.$router.push('/users'))
             .catch((error) => this.printMessage(error))
           break
       }

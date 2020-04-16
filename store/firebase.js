@@ -3,7 +3,6 @@ export default {
   state: {
     authUser: {}
   },
-
   mutations: {
     RESET_STORE: (state) => {
       state.authUser = null
@@ -11,9 +10,6 @@ export default {
 
     SET_AUTH_USER: (state, { authUser }) => {
       const { uid, email } = authUser
-      // eslint-disable-next-line no-console
-      console.log('authUser', { uid, email })
-
       state.authUser = { uid, email }
     }
   },
