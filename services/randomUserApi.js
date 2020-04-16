@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default () => {
   return axios.create({
-    baseURL: process.env.RANDOM_USER_API,
+    baseURL: 'https://randomuser.me/api/',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
